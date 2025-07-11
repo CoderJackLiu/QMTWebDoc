@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XtQuant 回调函数模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .nav-menu {
+            padding: 20px 0;
+        }
+        
+        .nav-section {
+            margin-bottom: 20px;
+        }
+        
+        .nav-section h3 {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .nav-section ul {
+            list-style: none;
+        }
+        
+        .nav-section li {
+            margin: 2px 0;
+        }
+        
+        .nav-section a {
+            display: block;
+            padding: 8px 20px;
+            color: #555;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-section a:hover {
+            background: #f0f0f0;
+            color: #667eea;
+            padding-left: 25px;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 40px;
+        }
+        
+        .page-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .page-header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .api-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .api-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            font-size: 1.8rem;
+        }
+        
+        .api-method {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            background: #fafbfc;
+        }
+        
+        .api-method h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .method-signature {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 15px;
+            overflow-x: auto;
+        }
+        
+        .method-info {
+            margin-bottom: 15px;
+        }
+        
+        .method-info h4 {
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .method-info p, .method-info li {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .method-info ul {
+            margin-left: 20px;
+        }
+        
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a4190);
+            transform: translateY(-2px);
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .highlight strong {
+            color: #856404;
+        }
+        
+        .info-box {
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .info-box strong {
+            color: #0c5460;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .data-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>回调函数模块</h2>
+                <p>事件回调处理</p>
+            </div>
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <h3>基础回调</h3>
+                    <ul>
+                        <li><a href="#register_callback">注册回调函数</a></li>
+                        <li><a href="#callback_types">回调类型说明</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3>交易回调</h3>
+                    <ul>
+                        <li><a href="#on_order_stock">下单回调</a></li>
+                        <li><a href="#on_cancel_order">撤单回调</a></li>
+                        <li><a href="#on_order_error">订单错误回调</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3>资产回调</h3>
+                    <ul>
+                        <li><a href="#on_stock_asset">资产变动回调</a></li>
+                        <li><a href="#on_stock_position">持仓变动回调</a></li>
+                        <li><a href="#on_stock_trade">成交回调</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h3>连接回调</h3>
+                    <ul>
+                        <li><a href="#on_account_status">账户状态回调</a></li>
+                        <li><a href="#callback_examples">完整示例</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <a href="xtquant_api_modules.html" class="back-link">← 返回模块首页</a>
+            
+            <div class="page-header">
+                <h1>回调函数模块</h1>
+                <p>事件驱动的回调函数处理机制</p>
+            </div>
+            
+            <div class="info-box">
+                <strong>回调机制说明:</strong> XtQuant采用事件驱动的回调机制，当特定事件发生时（如订单成交、资产变动等），系统会自动调用相应的回调函数，实现异步事件处理。
+            </div>
+            
+            <div class="api-section">
+                <h2>基础回调</h2>
+                
+                <div class="api-method" id="register_callback">
+                    <h3>注册回调函数</h3>
+                    <div class="method-signature">register_callback(callback_func, callback_type)</div>
+                    
+                    <div class="method-info">
+                        <h4>功能说明</h4>
+                        <p>注册指定类型的回调函数，当相应事件发生时系统会自动调用该函数。</p>
+                        
+                        <h4>参数</h4>
+                        <ul>
+                            <li><strong>callback_func</strong> (function): 回调函数对象</li>
+                            <li><strong>callback_type</strong> (str): 回调类型标识</li>
+                        </ul>
+                        
+                        <h4>返回值</h4>
+                        <p>无</p>
+                        
+                        <h4>示例代码</h4>
+                        <div class="code-example">
+# 定义回调函数
+def my_order_callback(data):
+    print(f"订单回调: {data}")
+
+def my_asset_callback(data):
+    print(f"资产回调: {data}")
+
+# 注册回调函数
+xt_trader.register_callback(my_order_callback, 'on_order_stock')
+xt_trader.register_callback(my_asset_callback, 'on_stock_asset')
+
+print("回调函数注册完成")
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="api-method" id="callback_types">
+                    <h3>回调类型说明</h3>
+                    
+                    <div class="method-info">
+                        <h4>支持的回调类型</h4>
+                        <table class="data-table">
+                            <tr>
+                                <th>回调类型</th>
+                                <th>触发时机</th>
+                                <th>说明</th>
+                            </tr>
+                            <tr>
+                                <td>on_order_stock</td>
+                                <td>下单操作完成</td>
+                                <td>异步下单结果回调</td>
+                            </tr>
+                            <tr>
+                                <td>on_cancel_order</td>
+                                <td>撤单操作完成</td>
+                                <td>异步撤单结果回调</td>
+                            </tr>
+                            <tr>
+                                <td>on_order_error</td>
+                                <td>订单操作错误</td>
+                                <td>订单错误信息回调</td>
+                            </tr>
+                            <tr>
+                                <td>on_stock_asset</td>
+                                <td>资产发生变动</td>
+                                <td>账户资产变动回调</td>
+                            </tr>
+                            <tr>
+                                <td>on_stock_position</td>
+                                <td>持仓发生变动</td>
+                                <td>股票持仓变动回调</td>
+                            </tr>
+                            <tr>
+                                <td>on_stock_trade</td>
+                                <td>订单成交</td>
+                                <td>股票成交回调</td>
+                            </tr>
+                            <tr>
+                                <td>on_account_status</td>
+                                <td>账户状态变化</td>
+                                <td>账户连接状态回调</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="api-section">
+                <h2>交易回调</h2>
+                
+                <div class="api-method" id="on_order_stock">
+                    <h3>下单回调</h3>
+                    <div class="method-signature">def on_order_stock(data):</div>
+                    
+                    <div class="method-info">
+                        <h4>功能说明</h4>
+                        <p>异步下单操作完成时的回调函数，返回下单结果信息。</p>
+                        
+                        <h4>回调数据结构</h4>
+                        <table class="data-table">
+                            <tr>
+                                <th>字段</th>
+                                <th>类型</th>
+                                <th>说明</th>
+                            </tr>
+                            <tr>
+                                <td>account_id</td>
+                                <td>str</td>
+                                <td>账户ID</td>
+                            </tr>
+                            <tr>
+                                <td>order_id</td>
+                                <td>int</td>
+                                <td>订单编号，-1表示失败</td>
+                            </tr>
+                            <tr>
+                                <td>stock_code</td>
+                                <td>str</td>
+                                <td>证券代码</td>
+                            </tr>
+                            <tr>
+                                <td>order_type</td>
+                                <td>int</td>
+                                <td>订单类型</td>
+                            </tr>
+                            <tr>
+                                <td>order_volume</td>
+                                <td>int</td>
+                                <td>委托数量</td>
+                            </tr>
+                            <tr>
+                                <td>price</td>
+                                <td>float</td>
+                                <td>委托价格</td>
+                            </tr>
+                            <tr>
+                                <td>error_msg</td>
+                                <td>str</td>
+                                <td>错误信息（失败时）</td>
+                            </tr>
+                        </table>
+                        
+                        <h4>示例代码</h4>
+                        <div class="code-example">
+def on_order_stock_callback(data):
+    """
+    下单回调函数
+    """
+    print(f"\n=== 下单回调 ===")
+    print(f"账户: {data.get('account_id', 'N/A')}")
+    print(f"股票代码: {data.get('stock_code', 'N/A')}")
+    
+    order_id = data.get('order_id', -1)
+    if order_id != -1:
+        print(f"下单成功!")
+        print(f"订单号: {order_id}")
+        
+        order_type_name = "买入" if data.get('order_type') == 23 else "卖出"
+        print(f"订单类型: {order_type_name}")
+        print(f"委托数量: {data.get('order_volume', 0):,} 股")
+        print(f"委托价格: {data.get('price', 0):.2f} 元")
+        
+        # 记录订单信息用于后续跟踪
+        order_tracker[order_id] = {
+            'stock_code': data.get('stock_code'),
+            'order_type': data.get('order_type'),
+            'volume': data.get('order_volume'),
+            'price': data.get('price'),
+            'time': datetime.now().strftime('%H:%M:%S')
+        }
+        
+    else:
+        print(f"下单失败!")
+        error_msg = data.get('error_msg', '未知错误')
+        print(f"错误信息: {error_msg}")
+        
+        # 记录失败信息
+        failed_orders.append({
+            'stock_code': data.get('stock_code'),
+            'error': error_msg,
+            'time': datetime.now().strftime('%H:%M:%S')
+        })
+
+# 注册下单回调
+order_tracker = {}  # 订单跟踪字典
+failed_orders = []  # 失败订单列表
+
+xt_trader.register_callback(on_order_stock_callback, 'on_order_stock')
+
+# 执行异步下单
+account = StockAccount('123456789')
+req_id = xt_trader.order_stock_async(
+    account=account,
+    stock_code='000001.SZ',
+    order_type=23,
+    order_volume=1000,
+    price_type=11,
+    price=12.50
+)
+
+print(f"异步下单请求已发送，请求ID: {req_id}")
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="api-method" id="on_cancel_order">
+                    <h3>撤单回调</h3>
+                    <div class="method-signature">def on_cancel_order(data):</div>
+                    
+                    <div class="method-info">
+                        <h4>功能说明</h4>
+                        <p>异步撤单操作完成时的回调函数，返回撤单结果信息。</p>
+                        
+                        <h4>回调数据结构</h4>
+                        <table class="data-table">
+                            <tr>
+                                <th>字段</th>
+                                <th>类型</th>
+                                <th>说明</th>
+                            </tr>
+                            <tr>
+                                <td>account_id</td>
+                                <td>str</td>
+                                <td>账户ID</td>
+                            </tr>
+                            <tr>
+                                <td>order_id</td>
+                                <td>int</td>
+                                <td>订单编号</td>
+                            </tr>
+                            <tr>
+                                <td>success</td>
+                                <td>bool</td>
+                                <td>撤单是否成功</td>
+                            </tr>
+                            <tr>
+                                <td>error_msg</td>
+                                <td>str</td>
+                                <td>错误信息（失败时）</td>
+                            </tr>
+                        </table>
+                        
+                        <h4>示例代码</h4>
+                        <div class="code-example">
+def on_cancel_order_callback(data):
+    """
+    撤单回调函数
+    """
+    print(f"\n=== 撤单回调 ===")
+    print(f"账户: {data.get('account_id', 'N/A')}")
+    print(f"订单号: {data.get('order_id', 'N/A')}")
+    
+    if data.get('success', False):
+        print(f"撤单成功!")
+        
+        # 从订单跟踪中移除
+        order_id = data.get('order_id')
+        if order_id in order_tracker:
+            cancelled_order = order_tracker.pop(order_id)
+            print(f"已撤销订单: {cancelled_order['stock_code']} {cancelled_order['volume']}股")
+            
+    else:
+        print(f"撤单失败!")
+        error_msg = data.get('error_msg', '未知错误')
+        print(f"错误信息: {error_msg}")
+
+# 注册撤单回调
+xt_trader.register_callback(on_cancel_order_callback, 'on_cancel_order')
+
+# 执行异步撤单
+order_id_to_cancel = 12345
+req_id = xt_trader.cancel_order_stock_async(account, order_id_to_cancel)
+print(f"异步撤单请求已发送，请求ID: {req_id}")
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="api-method" id="on_order_error">
+                    <h3>订单错误回调</h3>
+                    <div class="method-signature">def on_order_error(data):</div>
+                    
+                    <div class="method-info">
+                        <h4>功能说明</h4>
+                        <p>订单操作发生错误时的回调函数，用于处理各种订单异常情况。</p>
+                        
+                        <h4>回调数据结构</h4>
+                        <table class="data-table">
+                            <tr>
+                                <th>字段</th>
+                                <th>类型</th>
+                                <th>说明</th>
+                            </tr>
+                            <tr>
+                                <td>account_id</td>
+                                <td>str</td>
+                                <td>账户ID</td>
+                            </tr>
+                            <tr>
+                                <td>error_code</td>
+                                <td>int</td>
+                                <td>错误代码</td>
+                            </tr>
+                            <tr>
+                                <td>error_msg</td>
+                                <td>str</td>
+                                <td>错误描述</td>
+                            </tr>
+                            <tr>
+                                <td>order_info</td>
+                                <td>dict</td>
+                                <td>相关订单信息</td>
+                            </tr>
+                        </table>
+                        
+                        <h4>示例代码</h4>
+                        <div class="code-example">
+def on_order_error_callback(data):
+    """
+    订单错误回调函数
+    """
+    print(f"\n=== 订单错误回调 ===")
+    print(f"账户: {data.get('account_id', 'N/A')}")
+    print(f"错误代码: {data.get('error_code', 'N/A')}")
+    print(f"错误信息: {data.get('error_msg', 'N/A')}")
+    
+    # 根据错误类型进行处理
+    error_code = data.get('error_code', 0)
+    
+    if error_code == 1001:  # 资金不足
+        print("处理建议: 检查账户资金余额")
+    elif error_code == 1002:  # 持仓不足
+        print("处理建议: 检查股票持仓数量")
+    elif error_code == 1003:  # 价格超出涨跌停
+        print("处理建议: 调整委托价格")
+    elif error_code == 1004:  # 非交易时间
+        print("处理建议: 等待交易时间")
+    else:
+        print("处理建议: 检查订单参数和市场状态")
+    
+    # 记录错误日志
+    error_log = {
+        'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'account': data.get('account_id'),
+        'error_code': error_code,
+        'error_msg': data.get('error_msg'),
+        'order_info': data.get('order_info', {})
+    }
+    
+    # 保存到错误日志文件
+    with open('order_errors.log', 'a', encoding='utf-8') as f:
+        f.write(f"{error_log}\n")
+
+# 注册错误回调
+xt_trader.register_callback(on_order_error_callback, 'on_order_error')
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="api-section">
+                <h2>资产回调</h2>
+                
+                <div class="api-method" id="on_stock_asset">
+                    <h3>资产变动回调</h3>
+                    <div class="method-signature">def on_stock_asset(data):</div>
+                    
+                    <div class="method-info">
+                        <h4>功能说明</h4>
+                        <p>账户资产发生变动时的回调函数，实时监控资金变化。</p>
+                        
+                        <h4>回调数据结构</h4>
+                        <table class="data-table">
+                            <tr>
+                                <th>字段</th>
+                                <th>类型</th>
+                                <th>说明</th>
+                            </tr>
+                            <tr>
+                                <td>accountID</td>
+                                <td>str</td>
+                                <td>账户ID</td>
+                            </tr>
+                            <tr>
+                                <td>totalAsset</td>
+                                <td>float</td>
+                                <td>总资产</td>
+                            </tr>
+                            <tr>
+                                <td>cash</td>
+                                <td>float</td>
+                                <td>可用资金</td>
+                            </tr>
+                            <tr>
+                                <td>marketValue</td>
+                                <td>float</td>
+                                <td>持仓市值</td>
+                            </tr>
+                            <tr>
+                                <td>frozenCash</td>
+                                <td>float</td>
+                                <td>冻结资金</td>
+                            </tr>
+                        </table>
+                        
+                        <h4>示例代码</h4>
+                        <div class="code-example">
+def on_stock_asset_callback(data):
+    """
+    资产变动回调函数
+    """
+    print(f"\n=== 资产变动回调 ===")
+    print(f"账户: {data.get('accountID', 'N/A')}")
+    print(f"总资产: {data.get('totalAsset', 0):,.2f}")
+    print(f"可用资金: {data.get('cash', 0):,.2f}")
+    print(f"持仓市值: {data.get('marketValue', 0):,.2f}")
+    print(f"冻结资金: {data.get('frozenCash', 0):,.2f}")
+    
+    # 计算资产变化
+    account_id = data.get('accountID')
+    current_asset = data.get('totalAsset', 0)
+    
+    if account_id in asset_history:
+        previous_asset = asset_history[account_id][-1]['totalAsset']
+        change = current_asset - previous_asset
+        change_pct = (change / previous_asset) * 100 if previous_asset > 0 else 0
+        
+        print(f"资产变化: {change:+,.2f} ({change_pct:+.2f}%)")
+        
+        # 风险监控
+        if change_pct < -5:  # 资产下跌超过5%
+            print("⚠️ 风险警告: 资产大幅下跌!")
+            # 可以在这里添加风险控制逻辑
+            
+    else:
+        asset_history[account_id] = []
+    
+    # 记录资产历史
+    asset_record = {
+        'time': datetime.now(),
+        'totalAsset': current_asset,
+        'cash': data.get('cash', 0),
+        'marketValue': data.get('marketValue', 0)
+    }
+    asset_history[account_id].append(asset_record)
+    
+    # 保持最近100条记录
+    if len(asset_history[account_id]) > 100:
+        asset_history[account_id] = asset_history[account_id][-100:]
+
+# 注册资产回调
+asset_history = {}  # 资产历史记录
+xt_trader.register_callback(on_stock_asset_callback, 'on_stock_asset')
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="api-method" id="on_stock_position">
+                    <h3>持仓变动回调</h3>
+                    <div class="method-signature">def on_stock_position(data):</div>
+                    
+                    <div class="method-info">
+                        <h4>功能说明</h4>
+                        <p>股票持仓发生变动时的回调函数，监控持仓变化。</p>
+                        
+                        <h4>示例代码</h4>
+                        <div class="code-example">
+def on_stock_position_callback(data):
+    """
+    持仓变动回调函数
+    """
+    print(f"\n=== 持仓变动回调 ===")
+    
+    for position in data:
+        stock_code = position.get('stockCode', 'N/A')
+        stock_name = position.get('stockName', 'N/A')
+        volume = position.get('volume', 0)
+        can_use_volume = position.get('canUseVolume', 0)
+        avg_price = position.get('avgPrice', 0)
+        market_value = position.get('marketValue', 0)
+        
+        print(f"\n股票: {stock_name} ({stock_code})")
+        print(f"持仓: {volume:,} 股")
+        print(f"可用: {can_use_volume:,} 股")
+        print(f"成本价: {avg_price:.2f}")
+        print(f"市值: {market_value:,.2f}")
+        
+        # 检查持仓变化
+        if stock_code in position_history:
+            prev_volume = position_history[stock_code].get('volume', 0)
+            volume_change = volume - prev_volume
+            
+            if volume_change != 0:
+                change_type = "增加" if volume_change > 0 else "减少"
+                print(f"持仓变化: {change_type} {abs(volume_change):,} 股")
+        
+        # 更新持仓历史
+        position_history[stock_code] = position.copy()
+
+# 注册持仓回调
+position_history = {}  # 持仓历史记录
+xt_trader.register_callback(on_stock_position_callback, 'on_stock_position')
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="api-method" id="on_stock_trade">
+                    <h3>成交回调</h3>
+                    <div class="method-signature">def on_stock_trade(data):</div>
+                    
+                    <div class="method-info">
+                        <h4>功能说明</h4>
+                        <p>订单成交时的回调函数，实时获取成交信息。</p>
+                        
+                        <h4>示例代码</h4>
+                        <div class="code-example">
+def on_stock_trade_callback(data):
+    """
+    成交回调函数
+    """
+    print(f"\n=== 成交回调 ===")
+    
+    for trade in data:
+        order_id = trade.get('orderID', 'N/A')
+        stock_code = trade.get('stockCode', 'N/A')
+        order_type = trade.get('orderType', 0)
+        traded_volume = trade.get('tradedVolume', 0)
+        traded_price = trade.get('tradedPrice', 0)
+        traded_amount = trade.get('tradedAmount', 0)
+        traded_time = trade.get('tradedTime', 'N/A')
+        
+        order_type_name = "买入" if order_type == 23 else "卖出"
+        
+        print(f"\n订单号: {order_id}")
+        print(f"股票代码: {stock_code}")
+        print(f"交易类型: {order_type_name}")
+        print(f"成交数量: {traded_volume:,} 股")
+        print(f"成交价格: {traded_price:.2f}")
+        print(f"成交金额: {traded_amount:,.2f}")
+        print(f"成交时间: {traded_time}")
+        
+        # 记录成交信息
+        trade_record = {
+            'time': datetime.now(),
+            'order_id': order_id,
+            'stock_code': stock_code,
+            'order_type': order_type,
+            'volume': traded_volume,
+            'price': traded_price,
+            'amount': traded_amount
+        }
+        
+        trade_history.append(trade_record)
+        
+        # 计算当日成交统计
+        today = datetime.now().date()
+        today_trades = [t for t in trade_history if t['time'].date() == today]
+        
+        buy_amount = sum(t['amount'] for t in today_trades if t['order_type'] == 23)
+        sell_amount = sum(t['amount'] for t in today_trades if t['order_type'] == 24)
+        
+        print(f"\n今日成交统计:")
+        print(f"买入金额: {buy_amount:,.2f}")
+        print(f"卖出金额: {sell_amount:,.2f}")
+        print(f"净买入: {buy_amount - sell_amount:,.2f}")
+
+# 注册成交回调
+trade_history = []  # 成交历史记录
+xt_trader.register_callback(on_stock_trade_callback, 'on_stock_trade')
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="api-section">
+                <h2>连接回调</h2>
+                
+                <div class="api-method" id="on_account_status">
+                    <h3>账户状态回调</h3>
+                    <div class="method-signature">def on_account_status(data):</div>
+                    
+                    <div class="method-info">
+                        <h4>功能说明</h4>
+                        <p>账户连接状态发生变化时的回调函数。</p>
+                        
+                        <h4>示例代码</h4>
+                        <div class="code-example">
+def on_account_status_callback(data):
+    """
+    账户状态回调函数
+    """
+    print(f"\n=== 账户状态回调 ===")
+    
+    account_id = data.get('account_id', 'N/A')
+    status = data.get('status', 0)
+    
+    status_names = {
+        0: "未连接",
+        1: "连接中", 
+        2: "已连接",
+        3: "连接断开",
+        4: "连接错误"
+    }
+    
+    status_name = status_names.get(status, "未知状态")
+    
+    print(f"账户: {account_id}")
+    print(f"状态: {status_name}")
+    
+    # 根据状态进行相应处理
+    if status == 2:  # 已连接
+        print("✅ 账户连接成功，可以进行交易")
+    elif status == 3:  # 连接断开
+        print("⚠️ 账户连接断开，请检查网络")
+    elif status == 4:  # 连接错误
+        print("❌ 账户连接错误，请检查账户信息")
+        error_msg = data.get('error_msg', '')
+        if error_msg:
+            print(f"错误信息: {error_msg}")
+
+# 注册账户状态回调
+xt_trader.register_callback(on_account_status_callback, 'on_account_status')
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="api-method" id="callback_examples">
+                    <h3>完整回调示例</h3>
+                    
+                    <div class="method-info">
+                        <h4>综合回调处理示例</h4>
+                        <div class="code-example">
+import datetime
+import json
+
+class TradingCallbackHandler:
+    def __init__(self):
+        self.order_tracker = {}
+        self.trade_history = []
+        self.asset_history = {}
+        self.position_history = {}
+        
+    def setup_callbacks(self, xt_trader):
+        """设置所有回调函数"""
+        xt_trader.register_callback(self.on_order_stock, 'on_order_stock')
+        xt_trader.register_callback(self.on_cancel_order, 'on_cancel_order')
+        xt_trader.register_callback(self.on_order_error, 'on_order_error')
+        xt_trader.register_callback(self.on_stock_asset, 'on_stock_asset')
+        xt_trader.register_callback(self.on_stock_position, 'on_stock_position')
+        xt_trader.register_callback(self.on_stock_trade, 'on_stock_trade')
+        xt_trader.register_callback(self.on_account_status, 'on_account_status')
+        
+        print("所有回调函数已注册")
+    
+    def on_order_stock(self, data):
+        """下单回调"""
+        order_id = data.get('order_id', -1)
+        if order_id != -1:
+            self.order_tracker[order_id] = data
+            self.log_event('ORDER_SUCCESS', data)
+        else:
+            self.log_event('ORDER_FAILED', data)
+    
+    def on_cancel_order(self, data):
+        """撤单回调"""
+        if data.get('success', False):
+            order_id = data.get('order_id')
+            if order_id in self.order_tracker:
+                del self.order_tracker[order_id]
+            self.log_event('CANCEL_SUCCESS', data)
+        else:
+            self.log_event('CANCEL_FAILED', data)
+    
+    def on_order_error(self, data):
+        """订单错误回调"""
+        self.log_event('ORDER_ERROR', data)
+    
+    def on_stock_asset(self, data):
+        """资产变动回调"""
+        account_id = data.get('accountID')
+        if account_id not in self.asset_history:
+            self.asset_history[account_id] = []
+        
+        self.asset_history[account_id].append({
+            'time': datetime.datetime.now(),
+            'data': data
+        })
+        
+        self.log_event('ASSET_CHANGE', data)
+    
+    def on_stock_position(self, data):
+        """持仓变动回调"""
+        for position in data:
+            stock_code = position.get('stockCode')
+            self.position_history[stock_code] = position
+        
+        self.log_event('POSITION_CHANGE', {'count': len(data)})
+    
+    def on_stock_trade(self, data):
+        """成交回调"""
+        for trade in data:
+            self.trade_history.append({
+                'time': datetime.datetime.now(),
+                'data': trade
+            })
+        
+        self.log_event('TRADE_EXECUTED', {'count': len(data)})
+    
+    def on_account_status(self, data):
+        """账户状态回调"""
+        self.log_event('ACCOUNT_STATUS', data)
+    
+    def log_event(self, event_type, data):
+        """记录事件日志"""
+        log_entry = {
+            'timestamp': datetime.datetime.now().isoformat(),
+            'event_type': event_type,
+            'data': data
+        }
+        
+        # 打印到控制台
+        print(f"[{log_entry['timestamp']}] {event_type}: {data}")
+        
+        # 保存到文件
+        with open('trading_events.log', 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry, ensure_ascii=False) + '\n')
+    
+    def get_statistics(self):
+        """获取交易统计"""
+        stats = {
+            'active_orders': len(self.order_tracker),
+            'total_trades': len(self.trade_history),
+            'monitored_accounts': len(self.asset_history),
+            'tracked_positions': len(self.position_history)
+        }
+        
+        return stats
+
+# 使用示例
+handler = TradingCallbackHandler()
+handler.setup_callbacks(xt_trader)
+
+# 执行一些交易操作
+account = StockAccount('123456789')
+
+# 异步下单
+xt_trader.order_stock_async(
+    account=account,
+    stock_code='000001.SZ',
+    order_type=23,
+    order_volume=1000,
+    price_type=11,
+    price=12.50
+)
+
+# 查看统计信息
+print("\n交易统计:")
+stats = handler.get_statistics()
+for key, value in stats.items():
+    print(f"{key}: {value}")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

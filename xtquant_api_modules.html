@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XtQuant API 模块化文档</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .module-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e1e8ed;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .module-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .module-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .module-card p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .api-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        
+        .api-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        
+        .api-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .module-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .module-link:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a4190);
+            transform: translateY(-2px);
+        }
+        
+        .benefits {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .benefits h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>XtQuant API 模块化文档</h1>
+            <p>高效维护，模块化管理的量化交易API文档</p>
+        </div>
+        
+        <div class="benefits">
+            <h2>模块化架构优势</h2>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">🚀</div>
+                    <div>
+                        <strong>高效维护</strong><br>
+                        <small>独立模块，便于更新和维护</small>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">📚</div>
+                    <div>
+                        <strong>清晰分类</strong><br>
+                        <small>按功能模块组织，查找更便捷</small>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">⚡</div>
+                    <div>
+                        <strong>快速加载</strong><br>
+                        <small>按需加载，提升访问速度</small>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🔧</div>
+                    <div>
+                        <strong>易于扩展</strong><br>
+                        <small>新增功能模块更加简单</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modules-grid">
+            <div class="module-card">
+                <div class="module-icon">📈</div>
+                <h3>交易接口模块</h3>
+                <p>包含所有股票交易相关的API接口，支持同步和异步下单、撤单等操作。</p>
+                <ul class="api-list">
+                    <li>order_stock() - 股票同步下单</li>
+                    <li>order_stock_async() - 股票异步下单</li>
+                    <li>cancel_order_stock() - 股票同步撤单</li>
+                    <li>cancel_order_stock_async() - 股票异步撤单</li>
+                    <li>cancel_order_stock_sysid() - 按合同编号撤单</li>
+                </ul>
+                <a href="trading_module.html" class="module-link">查看详情</a>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-icon">🔍</div>
+                <h3>查询接口模块</h3>
+                <p>提供资产、持仓、订单、成交等各类查询功能，支持实时数据获取。</p>
+                <ul class="api-list">
+                    <li>query_stock_asset() - 资产查询</li>
+                    <li>query_stock_positions() - 持仓查询</li>
+                    <li>query_stock_orders() - 订单查询</li>
+                    <li>query_stock_trades() - 成交查询</li>
+                    <li>query_position_statistics() - 持仓统计</li>
+                </ul>
+                <a href="query_module.html" class="module-link">查看详情</a>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-icon">💳</div>
+                <h3>信用交易模块</h3>
+                <p>融资融券相关接口，包括信用资产查询、约券操作、担保品管理等。</p>
+                <ul class="api-list">
+                    <li>query_credit_detail() - 信用资产查询</li>
+                    <li>query_credit_subjects() - 融资融券标的</li>
+                    <li>query_credit_slo_code() - 可融券数据</li>
+                    <li>smt_query_quoter() - 券源行情查询</li>
+                    <li>smt_query_compact() - 约券合约查询</li>
+                </ul>
+                <a href="credit_module.html" class="module-link">查看详情</a>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-icon">🎯</div>
+                <h3>新股申购模块</h3>
+                <p>新股申购相关功能，包括额度查询、新股信息获取等。</p>
+                <ul class="api-list">
+                    <li>query_new_purchase_limit() - 申购额度查询</li>
+                    <li>query_ipo_data() - 当日新股信息</li>
+                    <li>order_stock() - 新股申购下单</li>
+                </ul>
+                <a href="ipo_module.html" class="module-link">查看详情</a>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-icon">⚙️</div>
+                <h3>账户管理模块</h3>
+                <p>账户相关管理功能，包括账户信息、状态查询、连接管理等。</p>
+                <ul class="api-list">
+                    <li>connect() - 连接服务器</li>
+                    <li>subscribe() - 订阅账户</li>
+                    <li>query_account_infos() - 账号信息查询</li>
+                    <li>query_account_status() - 账号状态查询</li>
+                    <li>start() / stop() - 启动/停止API</li>
+                </ul>
+                <a href="account_module.html" class="module-link">查看详情</a>
+            </div>
+            
+            <div class="module-card">
+                <div class="module-icon">🔔</div>
+                <h3>回调函数模块</h3>
+                <p>事件回调处理机制，包括下单回调、撤单回调、账户状态回调等。</p>
+                <ul class="api-list">
+                    <li>on_order_error() - 下单失败回调</li>
+                    <li>on_cancel_error() - 撤单失败回调</li>
+                    <li>on_order_stock_async_response() - 异步下单回调</li>
+                    <li>on_account_status() - 账户状态回调</li>
+                </ul>
+                <a href="callback_module.html" class="module-link">查看详情</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 XtQuant API 模块化文档 - 让量化交易开发更高效</p>
+        </div>
+    </div>
+</body>
+</html>
