@@ -13,9 +13,11 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f7fa;
+            line-height: 1.7;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         .container {
@@ -64,16 +66,24 @@
             transition: all 0.3s;
         }
         
-        .sidebar-nav > li > a:hover {
+        .sidebar-nav > li > a:hover,
+        .sidebar-nav > li > a.active {
             color: #3498db;
             border-left-color: #3498db;
             background-color: rgba(52, 152, 219, 0.1);
         }
         
+        .sidebar-nav > li > a.parent-active {
+            color: #2980b9;
+            border-left-color: #2980b9;
+            background-color: rgba(41, 128, 185, 0.05);
+        }
+        
         .sidebar-nav ul {
             list-style: none;
-            margin-left: 20px;
+            margin-left: 0;
             margin-top: 10px;
+            padding-left: 0;
         }
         
         .sidebar-nav ul li {
@@ -85,20 +95,43 @@
             text-decoration: none;
             font-size: 0.9em;
             display: block;
-            padding: 4px 0;
-            transition: color 0.3s;
+            padding: 6px 0 6px 35px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            position: relative;
         }
         
-        .sidebar-nav ul li a:hover {
+        .sidebar-nav ul li a:before {
+            content: "▸";
+            position: absolute;
+            left: 20px;
+            color: #7f8c8d;
+            font-size: 0.8em;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-nav ul li a:hover,
+        .sidebar-nav ul li a.active {
             color: #3498db;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left-color: #3498db;
+            padding-left: 40px;
+        }
+        
+        .sidebar-nav ul li a:hover:before,
+        .sidebar-nav ul li a.active:before {
+            color: #3498db;
+            left: 25px;
         }
         
         .main-content {
             flex: 1;
             margin-left: 280px;
-            padding: 30px;
-            background-color: white;
+            padding: 40px;
+            background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
             min-height: 100vh;
+            border-radius: 20px 0 0 0;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.05);
         }
         
         h1 {
@@ -143,61 +176,79 @@
         }
         
         .api-function {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid #e3e6ea;
+            border-radius: 16px;
+            padding: 0;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .api-function:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.08);
         }
         
         .api-function h4 {
-            margin-top: 0;
-            background-color: #e9ecef;
-            margin: -20px -20px 15px -20px;
-            padding: 15px 20px;
-            border-radius: 8px 8px 0 0;
-            border-left: none;
-            border-bottom: 2px solid #27ae60;
+            margin: 0;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 0;
+            border: none;
+            font-size: 1.4em;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 25px;
         }
         
         .function-signature {
-            background-color: #2c3e50;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: #ecf0f1;
-            padding: 15px;
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            font-size: 1.1em;
+            padding: 18px 20px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 600;
             margin: 15px 0;
             overflow-x: auto;
+            border: 1px solid #4a6741;
+            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.3);
+            letter-spacing: 0.5px;
         }
         
         .function-description {
-            background-color: #d1ecf1;
+            background: linear-gradient(135deg, #e8f4fd 0%, #d1ecf1 100%);
             border: 1px solid #bee5eb;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 15px 0;
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin: 20px 25px;
+            box-shadow: 0 4px 16px rgba(190, 229, 235, 0.3);
         }
         
         .function-description h5 {
             color: #0c5460;
-            margin-bottom: 10px;
-            font-size: 1.1em;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
         }
         
         .param-list, .return-list {
-            background-color: #fff3cd;
+            background: linear-gradient(135deg, #fffbf0 0%, #fff3cd 100%);
             border: 1px solid #ffeaa7;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 15px 0;
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin: 20px 25px;
+            box-shadow: 0 4px 16px rgba(255, 234, 167, 0.3);
         }
         
         .param-list h5, .return-list h5 {
             color: #856404;
-            margin-bottom: 10px;
-            font-size: 1.1em;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
         }
         
         .param-list ul, .return-list ul {
@@ -209,44 +260,94 @@
         }
         
         .code-example {
-            background-color: #282a36;
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
             color: #f8f8f2;
-            padding: 20px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
+            padding: 0;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
             margin: 20px 0;
-            overflow-x: auto;
-            border-left: 4px solid #50fa7b;
+            overflow: hidden;
+            border: 1px solid #44475a;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
         
         .code-example h5 {
             color: #50fa7b;
-            margin-bottom: 15px;
+            margin: 0;
             font-size: 1.1em;
+            background: linear-gradient(90deg, #44475a 0%, #6272a4 100%);
+            padding: 12px 20px;
+            border-bottom: 1px solid #6272a4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .code-example pre {
+            margin: 0;
+            padding: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            background: transparent;
+        }
+        
+        .copy-btn {
+            background: linear-gradient(135deg, #50fa7b 0%, #8be9fd 100%);
+            color: #282a36;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(80, 250, 123, 0.3);
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(80, 250, 123, 0.4);
+        }
+        
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+        
+        .copy-btn.copied {
+            background: linear-gradient(135deg, #ff79c6 0%, #bd93f9 100%);
+            color: white;
         }
         
         .note {
-            background-color: #d4edda;
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
             border: 1px solid #c3e6cb;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 15px 0;
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin: 20px 25px;
+            box-shadow: 0 4px 16px rgba(195, 230, 203, 0.3);
+            border-left: 4px solid #28a745;
         }
         
         .warning {
-            background-color: #f8d7da;
+            background: linear-gradient(135deg, #fdf2f2 0%, #f8d7da 100%);
             border: 1px solid #f5c6cb;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 15px 0;
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin: 20px 25px;
+            box-shadow: 0 4px 16px rgba(245, 198, 203, 0.3);
+            border-left: 4px solid #dc3545;
         }
         
         .highlight {
-            background-color: #fff3cd;
+            background: linear-gradient(135deg, #fffbf0 0%, #fff3cd 100%);
             border: 1px solid #ffeaa7;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 15px 0;
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin: 20px 25px;
+            box-shadow: 0 4px 16px rgba(255, 234, 167, 0.3);
+            border-left: 4px solid #ffc107;
         }
         
         code {
@@ -258,24 +359,7 @@
             font-size: 0.9em;
         }
         
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #3498db;
-            color: white;
-            padding: 12px 16px;
-            border-radius: 50%;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: all 0.3s;
-            z-index: 1001;
-        }
-        
-        .back-to-top:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
+
         
         @media (max-width: 768px) {
             .sidebar {
@@ -409,7 +493,7 @@
                         </ul>
                     </div>
                     <div class="code-example">
-                        <h5>示例代码</h5>
+                        <h5>示例代码 <button class="copy-btn" onclick="copyCode(this)">复制</button></h5>
                         <pre># path为mini qmt客户端安装目录下userdata_mini路径
 path = 'D:\\迅投极速交易终端 睿智融科版\\userdata_mini'
 # session_id为会话编号，策略使用方对于不同的Python策略需要使用不同的会话编号
@@ -446,7 +530,7 @@ xt_trader = XtQuantTrader(path, session_id)</pre>
                         </ul>
                     </div>
                     <div class="code-example">
-                        <h5>示例代码</h5>
+                        <h5>示例代码 <button class="copy-btn" onclick="copyCode(this)">复制</button></h5>
                         <pre># 创建交易回调类对象，并声明接收回调
 from xtquant.xttrader import XtQuantTrader, XtQuantTraderCallback
 
@@ -1720,9 +1804,58 @@ else:
          </main>
      </div>
      
-     <a href="#top" class="back-to-top">↑</a>
+
      
      <script>
+         // 复制代码功能
+         function copyCode(button) {
+             const codeBlock = button.closest('.code-example').querySelector('pre');
+             const code = codeBlock.textContent;
+             
+             navigator.clipboard.writeText(code).then(function() {
+                 const originalText = button.textContent;
+                 button.textContent = '已复制!';
+                 button.classList.add('copied');
+                 
+                 setTimeout(function() {
+                     button.textContent = originalText;
+                     button.classList.remove('copied');
+                 }, 2000);
+             }).catch(function(err) {
+                 console.error('复制失败: ', err);
+                 // 降级方案
+                 const textArea = document.createElement('textarea');
+                 textArea.value = code;
+                 document.body.appendChild(textArea);
+                 textArea.select();
+                 document.execCommand('copy');
+                 document.body.removeChild(textArea);
+                 
+                 const originalText = button.textContent;
+                 button.textContent = '已复制!';
+                 button.classList.add('copied');
+                 
+                 setTimeout(function() {
+                     button.textContent = originalText;
+                     button.classList.remove('copied');
+                 }, 2000);
+             });
+         }
+         
+         // 页面加载完成后为所有代码示例添加复制按钮
+         document.addEventListener('DOMContentLoaded', function() {
+             const codeExamples = document.querySelectorAll('.code-example h5');
+             codeExamples.forEach(function(h5) {
+                 if (!h5.querySelector('.copy-btn')) {
+                     const copyBtn = document.createElement('button');
+                     copyBtn.className = 'copy-btn';
+                     copyBtn.textContent = '复制';
+                     copyBtn.onclick = function() { copyCode(this); };
+                     h5.appendChild(copyBtn);
+                 }
+             });
+         });
+         
          // 平滑滚动
          document.querySelectorAll('a[href^="#"]').forEach(anchor => {
              anchor.addEventListener('click', function (e) {
@@ -1737,35 +1870,69 @@ else:
              });
          });
          
-         // 返回顶部按钮显示/隐藏
-         window.addEventListener('scroll', function() {
-             const backToTop = document.querySelector('.back-to-top');
-             if (window.pageYOffset > 300) {
-                 backToTop.style.display = 'block';
-             } else {
-                 backToTop.style.display = 'none';
-             }
-         });
+
          
          // 侧边栏导航高亮
-         window.addEventListener('scroll', function() {
-             const sections = document.querySelectorAll('section[id]');
+         function updateNavHighlight() {
+             const sections = document.querySelectorAll('section[id], .api-function[id]');
              const navLinks = document.querySelectorAll('.sidebar-nav a[href^="#"]');
              
              let current = '';
+             let currentSection = null;
+             
+             // 找到当前可见的section
              sections.forEach(section => {
                  const sectionTop = section.offsetTop;
                  const sectionHeight = section.clientHeight;
-                 if (pageYOffset >= sectionTop - 200) {
+                 if (pageYOffset >= sectionTop - 300) {
                      current = section.getAttribute('id');
+                     currentSection = section;
                  }
              });
              
+             // 清除所有高亮状态
              navLinks.forEach(link => {
-                 link.style.color = '#95a5a6';
-                 if (link.getAttribute('href') === '#' + current) {
-                     link.style.color = '#3498db';
+                 link.classList.remove('active', 'parent-active');
+             });
+             
+             if (current) {
+                 // 高亮当前链接
+                 const currentLink = document.querySelector(`.sidebar-nav a[href="#${current}"]`);
+                 if (currentLink) {
+                     currentLink.classList.add('active');
+                     
+                     // 如果是子菜单项，同时高亮父菜单
+                     const parentLi = currentLink.closest('ul')?.closest('li');
+                     if (parentLi) {
+                         const parentLink = parentLi.querySelector('a');
+                         if (parentLink) {
+                             parentLink.classList.add('parent-active');
+                         }
+                     }
+                 } else {
+                     // 如果没有找到精确匹配，尝试匹配父级section
+                     const parentSection = currentSection?.closest('section[id]');
+                     if (parentSection) {
+                         const parentId = parentSection.getAttribute('id');
+                         const parentLink = document.querySelector(`.sidebar-nav a[href="#${parentId}"]`);
+                         if (parentLink) {
+                             parentLink.classList.add('parent-active');
+                         }
+                     }
                  }
+             }
+         }
+         
+         window.addEventListener('scroll', updateNavHighlight);
+         
+         // 页面加载时也执行一次
+         document.addEventListener('DOMContentLoaded', updateNavHighlight);
+         
+         // 点击导航链接时的处理
+         document.querySelectorAll('.sidebar-nav a[href^="#"]').forEach(link => {
+             link.addEventListener('click', function(e) {
+                 // 延迟更新高亮状态，确保滚动完成后再更新
+                 setTimeout(updateNavHighlight, 100);
              });
          });
      </script>
