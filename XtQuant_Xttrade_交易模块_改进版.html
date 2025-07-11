@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XtQuant.Xttrade 交易模块 API 文档</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            border-right: 1px solid #e1e4e8;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e1e4e8;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .sidebar-header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .nav-section {
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .nav-section-title {
+            padding: 0 20px 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #586069;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 8px 20px;
+            color: #24292e;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: #f6f8fa;
+            color: #0366d6;
+            border-left-color: #0366d6;
+        }
+
+        .nav-item.active {
+            background-color: #e3f2fd;
+            color: #0366d6;
+            border-left-color: #0366d6;
+            font-weight: 500;
+        }
+
+        .nav-sub-item {
+            padding-left: 40px;
+            font-size: 13px;
+            color: #586069;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 0;
+        }
+
+        .content-header {
+            background: white;
+            padding: 20px 40px;
+            border-bottom: 1px solid #e1e4e8;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: #586069;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: #24292e;
+            margin-bottom: 10px;
+        }
+
+        .page-description {
+            font-size: 16px;
+            color: #586069;
+        }
+
+        .content-body {
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        /* API 文档样式 */
+        .api-section {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .api-section-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .api-section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #24292e;
+            margin-bottom: 8px;
+        }
+
+        .api-section-description {
+            color: #586069;
+            font-size: 16px;
+        }
+
+        .api-method {
+            padding: 30px;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .api-method:last-child {
+            border-bottom: none;
+        }
+
+        .method-header {
+            margin-bottom: 20px;
+        }
+
+        .method-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #24292e;
+            margin-bottom: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        .method-description {
+            color: #586069;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .method-signature {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+
+        .params-section, .returns-section, .example-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #24292e;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e1e4e8;
+        }
+
+        .param-item {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #0366d6;
+        }
+
+        .param-name {
+            font-weight: 600;
+            color: #0366d6;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        .param-type {
+            color: #6f42c1;
+            font-size: 12px;
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+
+        .param-description {
+            color: #586069;
+            margin-top: 4px;
+        }
+
+        .code-example {
+            background: #282a36;
+            color: #f8f8f2;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-example::before {
+            content: 'Python';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 12px;
+            color: #6272a4;
+            background: #44475a;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 80px;
+            background: #44475a;
+            color: #f8f8f2;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #6272a4;
+        }
+
+        /* 语法高亮 */
+        .keyword { color: #ff79c6; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .function { color: #50fa7b; }
+        .variable { color: #8be9fd; }
+
+        /* 搜索框 */
+        .search-box {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #0366d6;
+            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .content-body {
+                padding: 20px;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: #0366d6;
+                color: white;
+                border: none;
+                padding: 10px;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+
+        /* 滚动条样式 */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f3f4;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #c1c8cd;
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #a1a7aa;
+        }
+
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0366d6;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: #0256cc;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+    
+    <div class="container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>XtQuant API</h1>
+                <p>交易模块文档</p>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索 API..." onkeyup="searchAPI(this.value)">
+            </div>
+            
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-section-title">快速开始</div>
+                    <a href="#overview" class="nav-item">概述</a>
+                    <a href="#installation" class="nav-item">安装配置</a>
+                    <a href="#quick-start" class="nav-item">快速开始</a>
+                    <a href="#connect-api" class="nav-item nav-sub-item">连接服务器</a>
+                    <a href="#register-callback" class="nav-item nav-sub-item">注册回调</a>
+                    <a href="#subscribe-api" class="nav-item nav-sub-item">订阅账户</a>
+                    <a href="#start-api" class="nav-item nav-sub-item">启动API</a>
+                    <a href="#stop-api" class="nav-item nav-sub-item">停止API</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">交易接口</div>
+                    <a href="#order-api" class="nav-item">下单接口</a>
+                    <a href="#order-stock" class="nav-item nav-sub-item">股票下单</a>
+                    <a href="#order-stock-async" class="nav-item nav-sub-item">异步下单</a>
+                    <a href="#cancel-order" class="nav-item nav-sub-item">撤单</a>
+                    <a href="#cancel-order-async" class="nav-item nav-sub-item">异步撤单</a>
+                    <a href="#cancel-order-sysid" class="nav-item nav-sub-item">按合同编号撤单</a>
+                    <a href="#cancel-order-sysid-async" class="nav-item nav-sub-item">按合同编号异步撤单</a>
+                    <a href="#order-etf" class="nav-item nav-sub-item">ETF下单</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">查询接口</div>
+                    <a href="#query-api" class="nav-item">查询接口</a>
+                    <a href="#query-assets" class="nav-item nav-sub-item">资产查询</a>
+                    <a href="#query-orders" class="nav-item nav-sub-item">委托查询</a>
+                    <a href="#query-trades" class="nav-item nav-sub-item">成交查询</a>
+                    <a href="#query-positions" class="nav-item nav-sub-item">持仓查询</a>
+                    <a href="#query-stock-trades" class="nav-item nav-sub-item">成交查询</a>
+                    <a href="#query-stock-order" class="nav-item nav-sub-item">单个委托查询</a>
+                    <a href="#query-stock-orders" class="nav-item nav-sub-item">委托列表查询</a>
+                    <a href="#query-position-statistics" class="nav-item nav-sub-item">期货持仓统计</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">信用交易</div>
+                    <a href="#credit-api" class="nav-item">信用接口</a>
+                    <a href="#credit-assets" class="nav-item nav-sub-item">信用资产</a>
+                    <a href="#credit-contracts" class="nav-item nav-sub-item">融资融券标的</a>
+                    <a href="#credit-assure" class="nav-item nav-sub-item">标的担保品</a>
+                    <a href="#credit-compacts" class="nav-item nav-sub-item">负债合约查询</a>
+                    <a href="#credit-slo-code" class="nav-item nav-sub-item">可融券数据查询</a>
+                    <a href="#smt-query-quoter" class="nav-item nav-sub-item">券源行情查询</a>
+                    <a href="#smt-query-compact" class="nav-item nav-sub-item">约券合约查询</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">新股申购</div>
+                    <a href="#ipo-api" class="nav-item">申购接口</a>
+                    <a href="#ipo-limit" class="nav-item nav-sub-item">申购额度查询</a>
+                    <a href="#ipo-info" class="nav-item nav-sub-item">新股信息查询</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">账户管理</div>
+                    <a href="#account-api" class="nav-item">账户接口</a>
+                    <a href="#account-info" class="nav-item nav-sub-item">账户信息</a>
+                    <a href="#account-status" class="nav-item nav-sub-item">账户状态</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">数据导出</div>
+                    <a href="#export-api" class="nav-item">导出接口</a>
+                    <a href="#export-data" class="nav-item nav-sub-item">通用数据导出</a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">回调函数</div>
+                    <a href="#callback-api" class="nav-item">回调接口</a>
+                    <a href="#on-order-error" class="nav-item nav-sub-item">下单失败回调</a>
+                    <a href="#on-cancel-error" class="nav-item nav-sub-item">撤单失败回调</a>
+                    <a href="#on-order-async-response" class="nav-item nav-sub-item">异步下单回调</a>
+                    <a href="#on-account-status" class="nav-item nav-sub-item">账户状态回调</a>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <div class="content-header">
+                <div class="breadcrumb">
+                    <a href="#">首页</a> > <a href="#">API文档</a> > XtQuant.Xttrade 交易模块
+                </div>
+                <h1 class="page-title">XtQuant.Xttrade 交易模块</h1>
+                <p class="page-description">提供完整的股票、期货、期权等金融产品的交易和查询功能</p>
+            </div>
+            
+            <div class="content-body">
+                <!-- 概述部分 -->
+                <section id="overview" class="api-section">
+                    <div class="api-section-header">
+                        <h2 class="api-section-title">概述</h2>
+                        <p class="api-section-description">XtQuant.Xttrade 是迅投量化交易平台的核心交易模块，提供了完整的程序化交易解决方案。</p>
+                    </div>
+                    <div class="api-method">
+                        <h3>主要功能</h3>
+                        <ul style="margin-left: 20px; color: #586069;">
+                            <li>支持股票、期货、期权、ETF等多种金融产品交易</li>
+                            <li>提供实时的资产、持仓、委托、成交查询</li>
+                            <li>支持信用交易（融资融券）</li>
+                            <li>完善的风控和错误处理机制</li>
+                            <li>高性能的异步交易接口</li>
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- 快速开始 -->
+                <section id="quick-start" class="api-section">
+                    <div class="api-section-header">
+                        <h2 class="api-section-title">快速开始</h2>
+                        <p class="api-section-description">快速上手 XtQuant 交易模块</p>
+                    </div>
+                    <div id="connect-api" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">connect()</h3>
+                            <p class="method-description">连接交易服务器</p>
+                        </div>
+                        
+                        <div class="method-signature">
+connect()
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">int</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">连接结果，0表示成功</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 连接交易服务器</span>
+connect_result = xt_trader.connect()
+<span class="keyword">if</span> connect_result == <span class="number">0</span>:
+    <span class="function">print</span>(<span class="string">"连接成功"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"连接失败"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="register-callback" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">register_callback()</h3>
+                            <p class="method-description">注册回调类</p>
+                        </div>
+                        
+                        <div class="method-signature">
+register_callback(callback)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">callback</span>
+                                <span class="param-type">XtQuantTraderCallback</span>
+                                <div class="param-description">回调类实例对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 创建交易回调类对象</span>
+<span class="keyword">class</span> <span class="class">MyXtQuantTraderCallback</span>(XtQuantTraderCallback):
+    <span class="keyword">def</span> <span class="function">on_order_stock_async_response</span>(<span class="keyword">self</span>, order):
+        <span class="function">print</span>(<span class="string">f"异步下单回调: {order}"</span>)
+    
+    <span class="keyword">def</span> <span class="function">on_account_status</span>(<span class="keyword">self</span>, account_status):
+        <span class="function">print</span>(<span class="string">f"账户状态: {account_status}"</span>)
+
+<span class="comment"># 注册回调</span>
+callback = MyXtQuantTraderCallback()
+xt_trader.register_callback(callback)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="subscribe-api" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">subscribe()</h3>
+                            <p class="method-description">订阅账户信息</p>
+                        </div>
+                        
+                        <div class="method-signature">
+subscribe(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 订阅账户信息</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+xt_trader.subscribe(account)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="run-forever" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">run_forever()</h3>
+                            <p class="method-description">启动事件循环</p>
+                        </div>
+                        
+                        <div class="method-signature">
+run_forever()
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 启动事件循环，保持程序运行</span>
+xt_trader.run_forever()
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-method">
+                        <h3>完整示例</h3>
+                        <div class="code-example">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="keyword">import</span> xtquant
+<span class="keyword">from</span> xtquant.xttrader <span class="keyword">import</span> XtQuantTrader, XtQuantTraderCallback
+<span class="keyword">from</span> xtquant.xttype <span class="keyword">import</span> StockAccount
+
+<span class="comment"># 创建交易实例</span>
+xt_trader = XtQuantTrader(<span class="string">'your_path'</span>, <span class="string">'your_session_id'</span>)
+
+<span class="comment"># 创建回调类</span>
+<span class="keyword">class</span> <span class="class">MyCallback</span>(XtQuantTraderCallback):
+    <span class="keyword">pass</span>
+
+<span class="comment"># 注册回调</span>
+callback = MyCallback()
+xt_trader.register_callback(callback)
+
+<span class="comment"># 连接交易服务器</span>
+connect_result = xt_trader.connect()
+<span class="keyword">if</span> connect_result == <span class="number">0</span>:
+    <span class="function">print</span>(<span class="string">"连接成功"</span>)
+    
+    <span class="comment"># 创建资金账号并订阅</span>
+    account = StockAccount(<span class="string">'your_account_id'</span>)
+    xt_trader.subscribe(account)
+    
+    <span class="comment"># 启动事件循环</span>
+    xt_trader.run_forever()
+                        </div>
+                    </div>
+                    
+                    <div id="start-api" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">start()</h3>
+                            <p class="method-description">准备API环境</p>
+                        </div>
+                        
+                        <div class="method-signature">
+start()
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 准备API环境</span>
+xt_trader.start()
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="stop-api" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">stop()</h3>
+                            <p class="method-description">停止API接口</p>
+                        </div>
+                        
+                        <div class="method-signature">
+stop()
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 停止API接口</span>
+xt_trader.stop()
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 下单接口 -->
+                <section id="order-api" class="api-section">
+                    <div class="api-section-header">
+                        <h2 class="api-section-title">下单接口</h2>
+                        <p class="api-section-description">提供各种金融产品的下单功能</p>
+                    </div>
+                    
+                    <div id="order-stock" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">order_stock()</h3>
+                            <p class="method-description">股票下单接口，支持买入、卖出等操作</p>
+                        </div>
+                        
+                        <div class="method-signature">
+order_stock(account, stock_code, order_type, order_volume, price_type, price, strategy_name, order_remark)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">stock_code</span>
+                                <span class="param-type">str</span>
+                                <div class="param-description">证券代码，如 '000001.SZ'</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">order_type</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">委托类型：23-买入，24-卖出</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">order_volume</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">委托数量（股）</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">price_type</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">报价类型：11-限价，5-市价</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">price</span>
+                                <span class="param-type">float</span>
+                                <div class="param-description">委托价格</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">order_id</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">委托编号，-1表示下单失败</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 买入平安银行100股</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+order_id = xt_trader.order_stock(
+    account=account,
+    stock_code=<span class="string">'000001.SZ'</span>,
+    order_type=<span class="string">23</span>,  <span class="comment"># 买入</span>
+    order_volume=<span class="string">100</span>,
+    price_type=<span class="string">11</span>,   <span class="comment"># 限价</span>
+    price=<span class="string">10.50</span>,
+    strategy_name=<span class="string">'test_strategy'</span>,
+    order_remark=<span class="string">'测试下单'</span>
+)
+
+<span class="keyword">if</span> order_id != -<span class="string">1</span>:
+    <span class="function">print</span>(<span class="string">f"下单成功，委托编号: {order_id}"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"下单失败"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="cancel-api" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">cancel_order_stock()</h3>
+                            <p class="method-description">撤销股票委托订单</p>
+                        </div>
+                        
+                        <div class="method-signature">
+cancel_order_stock(account, order_id)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">order_id</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">委托编号</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 撤销委托</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+cancel_result = xt_trader.cancel_order_stock(account, <span class="string">12345</span>)
+
+<span class="keyword">if</span> cancel_result == <span class="string">0</span>:
+    <span class="function">print</span>(<span class="string">"撤单成功"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"撤单失败"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="order-stock-async" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">order_stock_async()</h3>
+                            <p class="method-description">股票异步下单</p>
+                        </div>
+                        
+                        <div class="method-signature">
+order_stock_async(account, stock_code, order_type, order_volume, price_type, price, strategy_name, order_remark)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">stock_code</span>
+                                <span class="param-type">str</span>
+                                <div class="param-description">证券代码</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">order_type</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">委托类型（23买入，24卖出）</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">order_volume</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">委托数量</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">price_type</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">报价类型</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">price</span>
+                                <span class="param-type">float</span>
+                                <div class="param-description">委托价格</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">strategy_name</span>
+                                <span class="param-type">str</span>
+                                <div class="param-description">策略名称</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">order_remark</span>
+                                <span class="param-type">str</span>
+                                <div class="param-description">委托备注</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">int</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">委托编号，失败返回-1</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 异步下单买入股票</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+order_id = xt_trader.order_stock_async(account, <span class="string">'000001.SZ'</span>, <span class="number">23</span>, <span class="number">100</span>, <span class="number">11</span>, <span class="number">10.5</span>, <span class="string">'策略1'</span>, <span class="string">'测试下单'</span>)
+<span class="keyword">if</span> order_id != <span class="number">-1</span>:
+    <span class="function">print</span>(<span class="string">f"异步下单成功，订单编号: {order_id}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="cancel-order-async" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">cancel_order_stock_async()</h3>
+                            <p class="method-description">股票异步撤单（按订单编号）</p>
+                        </div>
+                        
+                        <div class="method-signature">
+cancel_order_stock_async(account, order_id)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">order_id</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">下单接口返回的订单编号</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">int</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">撤单请求序号，成功为大于0的正整数，失败为-1</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 异步撤单</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+order_id = <span class="number">100</span>
+cancel_result = xt_trader.cancel_order_stock_async(account, order_id)
+
+<span class="keyword">if</span> cancel_result > <span class="number">0</span>:
+    <span class="function">print</span>(<span class="string">f"异步撤单成功，序号: {cancel_result}"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"异步撤单失败"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="cancel-order-sysid" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">cancel_order_stock_sysid()</h3>
+                            <p class="method-description">股票同步撤单（按合同编号）</p>
+                        </div>
+                        
+                        <div class="method-signature">
+cancel_order_stock_sysid(account, market, order_sysid)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">market</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">交易市场</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">order_sysid</span>
+                                <span class="param-type">str</span>
+                                <div class="param-description">券商柜台的合同编号</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">int</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">撤单结果，0表示成功，-1表示失败</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 按合同编号撤单</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+market = xtconstant.SH_MARKET
+order_sysid = <span class="string">'123456789'</span>
+cancel_result = xt_trader.cancel_order_stock_sysid(account, market, order_sysid)
+
+<span class="keyword">if</span> cancel_result == <span class="number">0</span>:
+    <span class="function">print</span>(<span class="string">"撤单成功"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"撤单失败"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="cancel-order-sysid-async" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">cancel_order_stock_sysid_async()</h3>
+                            <p class="method-description">股票异步撤单（按合同编号）</p>
+                        </div>
+                        
+                        <div class="method-signature">
+cancel_order_stock_sysid_async(account, market, order_sysid)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">market</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">交易市场</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">order_sysid</span>
+                                <span class="param-type">str</span>
+                                <div class="param-description">券商柜台的合同编号</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">int</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">撤单请求序号，成功为大于0的正整数，失败为-1</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 按合同编号异步撤单</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+market = xtconstant.SH_MARKET
+order_sysid = <span class="string">'123456789'</span>
+cancel_result = xt_trader.cancel_order_stock_sysid_async(account, market, order_sysid)
+
+<span class="keyword">if</span> cancel_result > <span class="number">0</span>:
+    <span class="function">print</span>(<span class="string">f"异步撤单成功，序号: {cancel_result}"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"异步撤单失败"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 查询接口 -->
+                <section id="query-api" class="api-section">
+                    <div class="api-section-header">
+                        <h2 class="api-section-title">查询接口</h2>
+                        <p class="api-section-description">提供资产、委托、成交、持仓等信息查询</p>
+                    </div>
+                    
+                    <div id="query-assets" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_stock_asset()</h3>
+                            <p class="method-description">查询股票账户资产信息</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_stock_asset(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">XtAsset</span>
+                                <span class="param-type">object</span>
+                                <div class="param-description">资产对象，包含总资产、可用资金、持仓市值等信息</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询账户资产</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+asset = xt_trader.query_stock_asset(account)
+
+<span class="keyword">if</span> asset:
+    <span class="function">print</span>(<span class="string">f"总资产: {asset.total_asset}"</span>)
+    <span class="function">print</span>(<span class="string">f"可用资金: {asset.cash}"</span>)
+    <span class="function">print</span>(<span class="string">f"持仓市值: {asset.market_value}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="query-positions" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_stock_positions()</h3>
+                            <p class="method-description">查询股票持仓信息</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_stock_positions(account)
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询持仓</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+positions = xt_trader.query_stock_positions(account)
+
+<span class="keyword">if</span> positions:
+    <span class="keyword">for</span> pos <span class="keyword">in</span> positions:
+        <span class="function">print</span>(<span class="string">f"股票代码: {pos.stock_code}"</span>)
+        <span class="function">print</span>(<span class="string">f"持仓数量: {pos.volume}"</span>)
+        <span class="function">print</span>(<span class="string">f"可用数量: {pos.can_use_volume}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="query-stock-trades" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_stock_trades()</h3>
+                            <p class="method-description">查询股票成交记录</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_stock_trades(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">XtTrade</span>
+                                <div class="param-description">成交对象列表或None</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询成交记录</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+trades = xt_trader.query_stock_trades(account)
+
+<span class="keyword">if</span> trades:
+    <span class="keyword">for</span> trade <span class="keyword">in</span> trades:
+        <span class="function">print</span>(<span class="string">f"股票代码: {trade.stock_code}"</span>)
+        <span class="function">print</span>(<span class="string">f"成交数量: {trade.traded_volume}"</span>)
+        <span class="function">print</span>(<span class="string">f"成交价格: {trade.traded_price}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="query-stock-order" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_stock_order()</h3>
+                            <p class="method-description">根据订单编号查询单个委托</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_stock_order(account, order_id)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">order_id</span>
+                                <span class="param-type">int</span>
+                                <div class="param-description">订单编号</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">XtOrder</span>
+                                <span class="param-type">XtOrder</span>
+                                <div class="param-description">委托对象或None</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询单个委托</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+order = xt_trader.query_stock_order(account, <span class="string">12345</span>)
+
+<span class="keyword">if</span> order:
+    <span class="function">print</span>(<span class="string">f"订单编号: {order.order_id}"</span>)
+    <span class="function">print</span>(<span class="string">f"股票代码: {order.stock_code}"</span>)
+    <span class="function">print</span>(<span class="string">f"委托状态: {order.order_status}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="query-stock-orders" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_stock_orders()</h3>
+                            <p class="method-description">查询当日所有委托</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_stock_orders(account, cancelable_only=False)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">cancelable_only</span>
+                                <span class="param-type">bool</span>
+                                <div class="param-description">是否只查询可撤销的委托，默认False</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">XtOrder</span>
+                                <div class="param-description">委托对象列表或None</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询所有委托</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+orders = xt_trader.query_stock_orders(account, <span class="string">False</span>)
+
+<span class="keyword">if</span> orders:
+    <span class="keyword">for</span> order <span class="keyword">in</span> orders:
+        <span class="function">print</span>(<span class="string">f"订单编号: {order.order_id}"</span>)
+        <span class="function">print</span>(<span class="string">f"股票代码: {order.stock_code}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="query-position-statistics" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_position_statistics()</h3>
+                            <p class="method-description">查询期货持仓统计</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_position_statistics(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">期货资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">XtPositionStatistics</span>
+                                <div class="param-description">期货持仓统计对象列表或None</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询期货持仓统计</span>
+account = StockAccount(<span class="string">'1000000365'</span>, <span class="string">'FUTURE'</span>)
+positions = xt_trader.query_position_statistics(account)
+
+<span class="keyword">if</span> positions:
+    <span class="keyword">for</span> pos <span class="keyword">in</span> positions:
+        <span class="function">print</span>(<span class="string">f"合约代码: {pos.stock_code}"</span>)
+        <span class="function">print</span>(<span class="string">f"持仓数量: {pos.volume}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 信用交易接口 -->
+                <section id="credit-api" class="api-section">
+                    <div class="api-section-header">
+                        <h2 class="api-section-title">信用交易接口</h2>
+                        <p class="api-section-description">提供融资融券相关的交易和查询功能</p>
+                    </div>
+                    
+                    <div id="credit-assets" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_credit_detail()</h3>
+                            <p class="method-description">查询信用账户资产详情</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_credit_detail(account)
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询信用账户资产</span>
+account = StockAccount(<span class="string">'1208970161'</span>, <span class="string">'CREDIT'</span>)
+credit_detail = xt_trader.query_credit_detail(account)
+
+<span class="keyword">if</span> credit_detail:
+    <span class="function">print</span>(<span class="string">f"信用资产详情: {credit_detail}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="credit-contracts" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_credit_subjects()</h3>
+                            <p class="method-description">查询融资融券标的</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_credit_subjects(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">CreditSubjects</span>
+                                <div class="param-description">融资融券标的对象列表或None</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询融资融券标的</span>
+account = StockAccount(<span class="string">'1208970161'</span>, <span class="string">'CREDIT'</span>)
+subjects = xt_trader.query_credit_subjects(account)
+
+<span class="keyword">if</span> subjects:
+    <span class="keyword">for</span> subject <span class="keyword">in</span> subjects:
+        <span class="function">print</span>(<span class="string">f"标的代码: {subject.stock_code}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="credit-assure" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_credit_assure()</h3>
+                            <p class="method-description">查询标的担保品</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_credit_assure(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">CreditAssure</span>
+                                <div class="param-description">标的担保品对象列表或None</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询标的担保品</span>
+account = StockAccount(<span class="string">'1208970161'</span>, <span class="string">'CREDIT'</span>)
+assure_data = xt_trader.query_credit_assure(account)
+
+<span class="keyword">if</span> assure_data:
+    <span class="function">print</span>(<span class="string">f"担保品数据: {assure_data}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="query-stk-compacts" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_stk_compacts()</h3>
+                            <p class="method-description">查询负债合约</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_stk_compacts(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">信用资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">XtCompact</span>
+                                <div class="param-description">负债合约对象列表或None</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询负债合约</span>
+account = StockAccount(<span class="string">'1208970161'</span>, <span class="string">'CREDIT'</span>)
+compacts = xt_trader.query_stk_compacts(account)
+
+<span class="keyword">if</span> compacts:
+    <span class="keyword">for</span> compact <span class="keyword">in</span> compacts:
+        <span class="function">print</span>(<span class="string">f"合约编号: {compact.compact_id}"</span>)
+        <span class="function">print</span>(<span class="string">f"股票代码: {compact.stock_code}"</span>)
+        <span class="function">print</span>(<span class="string">f"负债金额: {compact.compact_amount}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="query-credit-slo-code" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_credit_slo_code()</h3>
+                            <p class="method-description">查询可融券数据</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_credit_slo_code(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">信用资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">CreditSloCode</span>
+                                <div class="param-description">可融券数据对象列表或None</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询可融券数据</span>
+account = StockAccount(<span class="string">'1208970161'</span>, <span class="string">'CREDIT'</span>)
+slo_data = xt_trader.query_credit_slo_code(account)
+
+<span class="keyword">if</span> slo_data:
+    <span class="keyword">for</span> slo <span class="keyword">in</span> slo_data:
+        <span class="function">print</span>(<span class="string">f"股票代码: {slo.stock_code}"</span>)
+        <span class="function">print</span>(<span class="string">f"可融券数量: {slo.slo_volume}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="smt-query-quoter" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">smt_query_quoter()</h3>
+                            <p class="method-description">券源行情查询</p>
+                        </div>
+                        
+                        <div class="method-signature">
+smt_query_quoter(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">dict</span>
+                                <div class="param-description">券源行情数据列表或None</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询券源行情</span>
+account = StockAccount(<span class="string">'1208970161'</span>, <span class="string">'CREDIT'</span>)
+quoter_data = xt_trader.smt_query_quoter(account)
+
+<span class="keyword">if</span> quoter_data:
+    <span class="keyword">for</span> item <span class="keyword">in</span> quoter_data:
+        <span class="function">print</span>(<span class="string">f"券源数据: {item}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="smt-query-compact" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">smt_query_compact()</h3>
+                            <p class="method-description">约券合约查询</p>
+                        </div>
+                        
+                        <div class="method-signature">
+smt_query_compact(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">dict</span>
+                                <div class="param-description">约券合约数据列表或None</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询约券合约</span>
+account = StockAccount(<span class="string">'1208970161'</span>, <span class="string">'CREDIT'</span>)
+compact_data = xt_trader.smt_query_compact(account)
+
+<span class="keyword">if</span> compact_data:
+    <span class="keyword">for</span> compact <span class="keyword">in</span> compact_data:
+        <span class="function">print</span>(<span class="string">f"约券合约: {compact}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 新股申购接口 -->
+                <section id="ipo-api" class="api-section">
+                    <div class="api-section-header">
+                        <h2 class="api-section-title">新股申购接口</h2>
+                        <p class="api-section-description">提供新股新债申购相关功能</p>
+                    </div>
+                    
+                    <div id="ipo-limit" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_new_purchase_limit()</h3>
+                            <p class="method-description">查询新股申购额度</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_new_purchase_limit(account)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">dict</span>
+                                <span class="param-type">dict</span>
+                                <div class="param-description">新股申购额度数据集，格式：{type: number}，其中type为品种类型（KCB-科创板，SH-上海，SZ-深圳），number为可申购股数</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询新股申购额度</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+limit_data = xt_trader.query_new_purchase_limit(account)
+
+<span class="keyword">if</span> limit_data:
+    <span class="function">print</span>(<span class="string">f"申购额度: {limit_data}"</span>)
+    <span class="comment"># 输出示例: {'SH': 15000, 'SZ': 8000, 'KCB': 5000}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="ipo-info" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_ipo_data()</h3>
+                            <p class="method-description">查询当日新股新债信息</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_ipo_data()
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">无</span>
+                                <span class="param-type">-</span>
+                                <div class="param-description">该方法无需参数</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">dict</span>
+                                <span class="param-type">dict</span>
+                                <div class="param-description">新股新债信息数据集，格式：{stock_code: info}，包含name、type、minPurchaseNum、maxPurchaseNum、purchaseDate、issuePrice等字段</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询当日新股新债信息</span>
+ipo_data = xt_trader.query_ipo_data()
+
+<span class="keyword">if</span> ipo_data:
+    <span class="keyword">for</span> code, info <span class="keyword">in</span> ipo_data.items():
+        <span class="function">print</span>(<span class="string">f"代码: {code}"</span>)
+        <span class="function">print</span>(<span class="string">f"名称: {info['name']}"</span>)
+        <span class="function">print</span>(<span class="string">f"类型: {info['type']}"</span>)
+        <span class="function">print</span>(<span class="string">f"发行价: {info['issuePrice']}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 账户管理接口 -->
+                <section id="account-api" class="api-section">
+                    <div class="api-section-header">
+                        <h2 class="api-section-title">账户管理接口</h2>
+                        <p class="api-section-description">提供账户信息查询和管理功能</p>
+                    </div>
+                    
+                    <div id="account-info" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_account_infos()</h3>
+                            <p class="method-description">查询所有资金账号信息</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_account_infos()
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">XtAccountInfo</span>
+                                <div class="param-description">账号信息对象列表</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询所有账号信息</span>
+account_infos = xt_trader.query_account_infos()
+
+<span class="keyword">if</span> account_infos:
+    <span class="keyword">for</span> info <span class="keyword">in</span> account_infos:
+        <span class="function">print</span>(<span class="string">f"账号信息: {info}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="account-status" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">query_account_status()</h3>
+                            <p class="method-description">查询所有账号状态</p>
+                        </div>
+                        
+                        <div class="method-signature">
+query_account_status()
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">list</span>
+                                <span class="param-type">XtAccountStatus</span>
+                                <div class="param-description">账号状态对象列表</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 查询所有账号状态</span>
+account_status = xt_trader.query_account_status()
+
+<span class="keyword">if</span> account_status:
+    <span class="keyword">for</span> status <span class="keyword">in</span> account_status:
+        <span class="function">print</span>(<span class="string">f"账号状态: {status}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 数据导出接口 -->
+                <section id="export-api" class="api-section">
+                    <div class="api-section-header">
+                        <h2 class="api-section-title">数据导出接口</h2>
+                        <p class="api-section-description">提供交易数据导出功能</p>
+                    </div>
+                    
+                    <div id="export-data" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">export_data()</h3>
+                            <p class="method-description">通用数据导出</p>
+                        </div>
+                        
+                        <div class="method-signature">
+export_data(account, result_path, data_type, start_time=None, end_time=None, user_param={})
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">account</span>
+                                <span class="param-type">StockAccount</span>
+                                <div class="param-description">资金账号对象</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">result_path</span>
+                                <span class="param-type">str</span>
+                                <div class="param-description">导出路径，包含文件名及.csv后缀</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">data_type</span>
+                                <span class="param-type">str</span>
+                                <div class="param-description">数据类型，如'deal'</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">start_time</span>
+                                <span class="param-type">str</span>
+                                <div class="param-description">开始时间（可选）</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">end_time</span>
+                                <span class="param-type">str</span>
+                                <div class="param-description">结束时间（可选）</div>
+                            </div>
+                            <div class="param-item">
+                                <span class="param-name">user_param</span>
+                                <span class="param-type">dict</span>
+                                <div class="param-description">用户参数（可选）</div>
+                            </div>
+                        </div>
+                        
+                        <div class="returns-section">
+                            <h4 class="section-title">返回值</h4>
+                            <div class="param-item">
+                                <span class="param-name">dict</span>
+                                <span class="param-type">dict</span>
+                                <div class="param-description">结果反馈信息</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="comment"># 导出成交数据</span>
+account = StockAccount(<span class="string">'1000000365'</span>)
+result = xt_trader.export_data(
+    account, 
+    <span class="string">'C:\\Users\\Desktop\\test\\deal.csv'</span>, 
+    <span class="string">'deal'</span>
+)
+
+<span class="function">print</span>(result)
+<span class="comment"># 成功输出: {'msg': 'export success'}</span>
+<span class="comment"># 失败输出: {'error': {'errorMsg': 'can not find account info'}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 回调函数接口 -->
+                <section id="callback-api" class="api-section">
+                    <div class="api-section-header">
+                        <h2 class="api-section-title">回调函数接口</h2>
+                        <p class="api-section-description">交易事件回调函数，需要继承XtQuantTraderCallback类并重写相应方法</p>
+                    </div>
+                    
+                    <div id="on-order-error" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">on_order_error()</h3>
+                            <p class="method-description">下单失败信息推送</p>
+                        </div>
+                        
+                        <div class="method-signature">
+def on_order_error(self, order_error)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">order_error</span>
+                                <span class="param-type">XtOrderError</span>
+                                <div class="param-description">下单失败信息对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="keyword">def</span> <span class="function">on_order_error</span>(<span class="keyword">self</span>, order_error):
+    <span class="comment">"""下单失败信息推送"""</span>
+    <span class="function">print</span>(<span class="string">"on order_error callback"</span>)
+    <span class="function">print</span>(order_error.order_id, order_error.error_id, order_error.error_msg)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="on-cancel-error" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">on_cancel_error()</h3>
+                            <p class="method-description">撤单失败信息推送</p>
+                        </div>
+                        
+                        <div class="method-signature">
+def on_cancel_error(self, cancel_error)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">cancel_error</span>
+                                <span class="param-type">XtCancelError</span>
+                                <div class="param-description">撤单失败信息对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="keyword">def</span> <span class="function">on_cancel_error</span>(<span class="keyword">self</span>, cancel_error):
+    <span class="comment">"""撤单失败信息推送"""</span>
+    <span class="function">print</span>(<span class="string">"on cancel_error callback"</span>)
+    <span class="function">print</span>(cancel_error.order_id, cancel_error.error_id, cancel_error.error_msg)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="on-order-async-response" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">on_order_stock_async_response()</h3>
+                            <p class="method-description">异步下单回报推送</p>
+                        </div>
+                        
+                        <div class="method-signature">
+def on_order_stock_async_response(self, response)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">response</span>
+                                <span class="param-type">XtOrderResponse</span>
+                                <div class="param-description">异步下单回报对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="keyword">def</span> <span class="function">on_order_stock_async_response</span>(<span class="keyword">self</span>, response):
+    <span class="comment">"""异步下单回报推送"""</span>
+    <span class="function">print</span>(<span class="string">"on_order_stock_async_response"</span>)
+    <span class="function">print</span>(response.account_id, response.order_id, response.seq)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="on-account-status" class="api-method">
+                        <div class="method-header">
+                            <h3 class="method-name">on_account_status()</h3>
+                            <p class="method-description">账户状态推送</p>
+                        </div>
+                        
+                        <div class="method-signature">
+def on_account_status(self, status)
+                        </div>
+                        
+                        <div class="params-section">
+                            <h4 class="section-title">参数</h4>
+                            <div class="param-item">
+                                <span class="param-name">status</span>
+                                <span class="param-type">XtAccountStatus</span>
+                                <div class="param-description">账户状态对象</div>
+                            </div>
+                        </div>
+                        
+                        <div class="example-section">
+                            <h4 class="section-title">示例</h4>
+                            <div class="code-example">
+                                <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="keyword">def</span> <span class="function">on_account_status</span>(<span class="keyword">self</span>, status):
+    <span class="comment">"""账户状态推送"""</span>
+    <span class="function">print</span>(<span class="string">f"账户状态: {status}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-method">
+                        <h3>完整回调类示例</h3>
+                        <div class="code-example">
+                            <button class="copy-btn" onclick="copyCode(this)">复制</button>
+<span class="keyword">from</span> xtquant.xttrader <span class="keyword">import</span> XtQuantTraderCallback
+
+<span class="keyword">class</span> <span class="class">MyXtQuantTraderCallback</span>(XtQuantTraderCallback):
+    <span class="keyword">def</span> <span class="function">on_disconnected</span>(<span class="keyword">self</span>):
+        <span class="comment">"""连接断开"""</span>
+        <span class="function">print</span>(<span class="string">"connection lost"</span>)
+    
+    <span class="keyword">def</span> <span class="function">on_stock_order</span>(<span class="keyword">self</span>, order):
+        <span class="comment">"""委托回报推送"""</span>
+        <span class="function">print</span>(<span class="string">"on order callback"</span>)
+        <span class="function">print</span>(order.stock_code, order.order_status, order.order_sysid)
+    
+    <span class="keyword">def</span> <span class="function">on_stock_asset</span>(<span class="keyword">self</span>, asset):
+        <span class="comment">"""资金变动推送"""</span>
+        <span class="function">print</span>(<span class="string">"on asset callback"</span>)
+        <span class="function">print</span>(asset.account_id, asset.cash, asset.total_asset)
+    
+    <span class="keyword">def</span> <span class="function">on_stock_trade</span>(<span class="keyword">self</span>, trade):
+        <span class="comment">"""成交回报推送"""</span>
+        <span class="function">print</span>(<span class="string">"on trade callback"</span>)
+        <span class="function">print</span>(trade.account_id, trade.stock_code, trade.order_id)
+    
+    <span class="keyword">def</span> <span class="function">on_stock_position</span>(<span class="keyword">self</span>, position):
+        <span class="comment">"""持仓变动推送"""</span>
+        <span class="function">print</span>(<span class="string">"on position callback"</span>)
+        <span class="function">print</span>(position.stock_code, position.volume)
+    
+    <span class="keyword">def</span> <span class="function">on_order_error</span>(<span class="keyword">self</span>, order_error):
+        <span class="comment">"""下单失败推送"""</span>
+        <span class="function">print</span>(<span class="string">"on order_error callback"</span>)
+        <span class="function">print</span>(order_error.order_id, order_error.error_id, order_error.error_msg)
+    
+    <span class="keyword">def</span> <span class="function">on_cancel_error</span>(<span class="keyword">self</span>, cancel_error):
+        <span class="comment">"""撤单失败推送"""</span>
+        <span class="function">print</span>(<span class="string">"on cancel_error callback"</span>)
+        <span class="function">print</span>(cancel_error.order_id, cancel_error.error_id, cancel_error.error_msg)
+    
+    <span class="keyword">def</span> <span class="function">on_order_stock_async_response</span>(<span class="keyword">self</span>, response):
+        <span class="comment">"""异步下单回报推送"""</span>
+        <span class="function">print</span>(<span class="string">"on_order_stock_async_response"</span>)
+        <span class="function">print</span>(response.account_id, response.order_id, response.seq)
+    
+    <span class="keyword">def</span> <span class="function">on_account_status</span>(<span class="keyword">self</span>, status):
+        <span class="comment">"""账户状态推送"""</span>
+        <span class="function">print</span>(<span class="string">f"账户状态: {status}"</span>)
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+    
+    <script>
+        // 侧边栏切换
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+        
+        // 搜索功能
+        function searchAPI(query) {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.api-section');
+            
+            if (!query) {
+                navItems.forEach(item => item.style.display = 'block');
+                sections.forEach(section => section.style.display = 'block');
+                return;
+            }
+            
+            const searchTerm = query.toLowerCase();
+            
+            navItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+            
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                section.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+        
+        // 复制代码
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling;
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = '已复制';
+                setTimeout(() => {
+                    button.textContent = '复制';
+                }, 2000);
+            });
+        }
+        
+        // 滚动到顶部
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // 显示/隐藏返回顶部按钮
+        window.addEventListener('scroll', () => {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        
+        // 导航高亮
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('.api-section');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', updateActiveNav);
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            updateActiveNav();
+        });
+    </script>
+</body>
+</html>
